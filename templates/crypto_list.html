@@ -17,34 +17,36 @@
       <th scope="col">Symbol</th>
       <th scope="col">Price</th>
       <th scope="col">Price Change 24h</th>
-      <th scope="col">Price Change 30D</th>
+      <th scope="col">Market Cap Change 24h</th>
       <th scope="col">Market Cap</th>
       <th scope="col">Max Supply</th>
     </tr>
   </thead>
   <tbody class="table-dark">
-  {% for name, value in data.items() %}
+  {% for coin in data %}
     <tr>
-      <td>{{value["Rank"]}}</td>
-      <td>{{name}}</td>
-      <td>{{value["Symbol"]}}</td>
-      <td>{{value["price"]}}$</td>
-      {% if value["percent_change_24h"] < 0 %}
-          <td style="color: red">{{value["percent_change_24h"]}}%</td>
+      <td>{{coin["market_cap_rank"]}}</td>
+        <td> <a href="{{ url_for('cryptocurr', crypto_currency=coin['id']) }}"> {{coin["name"]}}</a> </td>
+      <td>{{coin["symbol"]}}</td>
+      <td>{{round_number(coin["current_price"], 5)}} $</td>
+
+        {% if coin["price_change_percentage_24h"] < 0 %}
+          <td style="color: red">{{round_number(coin["price_change_percentage_24h"], 2)}} %</td>
       {% else %}
-          <td style="color: green">{{value["percent_change_24h"]}}%</td>
+          <td style="color: green">{{round_number(coin["price_change_percentage_24h"],2)}} %</td>
       {% endif %}
-      {% if value["percent_change_30d"] < 0 %}
-          <td style="color: red">{{value["percent_change_30d"]}}%</td>
+      {% if coin["market_cap_change_24h"] < 0 %}
+          <td style="color: red">{{round_number(coin["market_cap_change_percentage_24h"], 2)}}%</td>
       {% else %}
-          <td style="color: green">{{value["percent_change_30d"]}}%</td>
+          <td style="color: green">{{round_number(coin["market_cap_change_percentage_24h"], 2)}}%</td>
       {% endif %}
-      <td>{{value["market cap"]}}$</td>
-      {% if value["Max Supply"] == None %}
+      <td>{{coin["market_cap"]}}$</td>
+      {% if coin["max_supply"] == None %}
           <td style="color: green">∞</td>
       {% else %}
-          <td>{{"{:,}".format(value["Max Supply"])}}</td>
+          <td>{{"{:,}".format(coin["max_supply"])}}</td>
       {% endif %}
+
     </tr>
   {% endfor %}
   </tbody>
