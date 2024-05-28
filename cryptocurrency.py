@@ -4,21 +4,15 @@ import datetime
 import plotly.graph_objs as go
 
 
-
 class Cryptocurrency:
     def __init__(self):
-        self.Api_key = "API_KEY"
-        self.headers = {
-            'Accepts': 'application/json',
-            'X-CMC_PRO_API_KEY': "8ee55bfa-7185-405e-962d-8c23c4177921",
-        }
-
+        self.Api_key = "Coingecko_Api"
 
     def get_data(self):
         url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc"
         headers = {
             'Accepts': 'application/json',
-            "x-cg-demo-api-key": "CG-mK38Sw5UeKe2CJq15bGX43ju"
+            "x-cg-demo-api-key": self.Api_key
         }
 
         request = requests.get(url, headers=headers)
@@ -58,7 +52,7 @@ class Cryptocurrency:
     def crypto_data(self, coin):
         url = f"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids={coin}"
         header = {"accept": "application/json",
-                  "x-cg-demo-api-key": "CG-mK38Sw5UeKe2CJq15bGX43ju"}
+                  "x-cg-demo-api-key": self.Api_key}
         response = requests.get(url=url, headers=header)
         data = response.json()
         del data[0]["image"]
