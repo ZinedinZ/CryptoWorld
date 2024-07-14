@@ -20,22 +20,23 @@
     </style>
 </head>
 <body>
+
 <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#" style="color: red">CryptoWorld</a>
+        <a class="navbar-brand" href="" style="color: red">CryptoWorld</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link active" href="" aria-current="page">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="myportfolio">My Portfolio</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Cryptocurrency
                     </a>
                     <ul class="dropdown-menu">
@@ -45,14 +46,25 @@
                         <li><a class="dropdown-item" href="cryptocurrency">More...</a></li>
                     </ul>
                 </li>
+
             </ul>
-            <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="login-register">Login/Register</a>
+                </li>
+            </ul>
+             <form class="d-flex" role="search" action="{{ url_for('search') }}" method="get">
+        <input class="form-control me-2" type="search" placeholder="Search crypto" aria-label="Search" name="query">
+        <button class="btn btn-outline-success"  type="submit">Search</button>
+    </form>
         </div>
     </div>
 </nav>
+{% if error == "0" %}
+    <div style="text-align: center" class="alert alert-primary" role="alert">
+      That Cryptocurrency doesn't exist, Please Try again
+    </div>
+{% endif %}
 
 <header class="text-center my-5">
     <h1 style="font-size: 70px; color: red"><strong>Welcome to CryptoWorld</strong></h1>
@@ -65,13 +77,13 @@
             <section class="content-section">
                 <h3><strong>Check your portfolio every day:</strong></h3>
                 <div class="btn-container">
-                    <button type="button" class="btn btn-primary btn-lg">Portfolio</button>
+                    <button  onclick=location.href="myportfolio" type="button"  class="btn btn-primary btn-lg">Portfolio</button>
                 </div>
             </section>
             <section class="content-section">
                 <h3><strong>List of top 100 Cryptocurrency per Market cap:</strong></h3>
                 <div class="btn-container">
-                    <button type="button" class="btn btn-primary btn-lg">Cryptocurrency</button>
+                    <button onclick=location.href="cryptocurrency" type="button" class="btn btn-primary btn-lg">Cryptocurrency</button>
                 </div>
             </section>
         </div>
@@ -80,7 +92,7 @@
                 <h3><strong>Top 10:</strong></h3>
             </section>
             <div class="table-container">
-                <table class="table table-sm">
+                <table class="table table-bordered border-danger">
                     <thead>
                         <tr>
                             <th scope="col">Rank</th>
@@ -90,23 +102,14 @@
                         </tr>
                     </thead>
                     <tbody>
+                    {% for coin in data[:10] %}
                         <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
+                            <td><strong>{{coin["market_cap_rank"]}}</strong></td>
+                            <td><strong>{{coin["name"]}}</strong></td>
+                            <td><strong>{{round_number(coin["current_price"], 5)}} $</strong></td>
+                            <td><strong>{{"{:,}".format(coin["market_cap"])}} $</strong></td>
                         </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td colspan="2">Larry the Bird</td>
-                            <td>@twitter</td>
-                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
