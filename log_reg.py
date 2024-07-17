@@ -29,6 +29,8 @@ class Log_reg():
         self.cur.execute("SELECT username FROM user_data")
 
         usernames = self.cur.fetchall()
+
+
         usernames = [" ".join(map(str, row)) for row in usernames]
         for value in [name, lastname, username, email, password]:
             if value == "":

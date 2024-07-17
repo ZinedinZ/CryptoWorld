@@ -28,13 +28,15 @@ class Cryptocurrency:
 
         response = requests.get(url, headers=headers)
         data = response.json()
+        # Round number if is bigger then 1
         if data["prices"][0][1] > 1:
             price_data = [round(x[1]) for x in data["prices"]]
         else:
             price_data = [x[1] for x in data["prices"]]
+        # Create time data fot scatter chart
         time_data = [datetime.datetime.fromtimestamp(int(x[0]) / 1000) for x in data["prices"]]
         time_data = [date.strftime("%Y-%m-%d") for date in time_data]
-
+        # Plot scatter chart
         trace = go.Scatter(x=time_data, y=price_data, mode="lines+markers", line=dict(color="red"))
         layout = go.Layout(width=1300, height=750,
                            title=dict(text=f"{coin_name.capitalize()} price in last 30 Days", y=0.9, x=0.5, xanchor="center",

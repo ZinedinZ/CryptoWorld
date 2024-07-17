@@ -4,7 +4,7 @@ from log_reg import Log_reg
 from portfolio import Portfolio
 
 crypto = Cryptocurrency()
-log = Log_reg()
+#log = Log_reg()
 portfolio = Portfolio()
 
 app = Flask("__name__")
@@ -18,6 +18,23 @@ def round_number(value, decimals=0):
 def utility_processor():
     return dict(round_number=round_number)
 
+
+@app.route("/")
+def home():
+    error = request.args.get('error', None)
+    data = crypto.get_data()
+    return render_template("home_page.html", data=data, error=error)
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    username = request.form.get("username")
+    password = request.form.get("password")
+    error = 0#log.check_data(username, password)
+    print(error)
+    return render_template("log_reg.html", error=error)
+
+
 @app.route("/registred", methods=["POST"])
 def registred():
     name = request.form.get("name")
@@ -25,22 +42,8 @@ def registred():
     username = request.form.get("username")
     email = request.form.get("email")
     password = request.form.get("password")
-    return log.save_data(name, lastname, username, email, password)
+     #log.save_data(name, lastname, username, email, password)
 
-
-@app.route("/login", methods=["POST"])
-def login():
-    username = request.form.get("username")
-    password = request.form.get("password")
-    error = log.check_data(username, password)
-    print(error)
-    return render_template("log_reg.html", error=error)
-
-@app.route("/")
-def home():
-    error = request.args.get('error', None)
-    data = crypto.get_data()
-    return render_template("home_page.html", data=data, error=error)
 @app.route("/login-register")
 def log_reg():
     return render_template("log_reg.html")
@@ -62,6 +65,7 @@ def dynamic_page(subpath):
 
 @app.route("/myportfolio")
 def portfolio():
+    Portfolio().pie_chart()
     return render_template("portfolio.html")
 
 @app.route("/trade", methods=["POST"])
