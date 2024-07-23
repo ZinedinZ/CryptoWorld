@@ -7,9 +7,10 @@ class Log_reg():
         self.conn = psycopg2.connect(host="localhost", dbname="Users", user="postgres", password="postgresql", port=5432)
         self.cur = self.conn.cursor()
 
+
     def open_connection(self):
         self.conn = psycopg2.connect(host="localhost", dbname="Users", user="postgres", password="postgresql",
-                                     port=5432)
+                                      port=5432)
         self.cur = self.conn.cursor()
 
     def create_table(self):
@@ -45,20 +46,23 @@ class Log_reg():
         else:
             self.cur.execute(insert_query, (name, lastname, username, email, password))
             self.conn.commit()
-            self.cur.close()
             self.conn.close()
             return render_template("registered.html")
 
 
     def check_data(self, username, password):
-        self.cur.execute("SELECT username, password FROM user_data")
+        self.open_connection()
+        self.cur.execute("SELECT id, username, password FROM user_data")
         data =self.cur.fetchall()
+        print(data)
+        self.close_connection()
         # Check if user exist in database
         for n in data:
-            if username == n[0] and password == n[1]:
+            if username == n[1] and password == n[2]:
                 print(username, password)
-                return "Svaka cast"
-        return 0
+                print(n[0])
+                return n[0]
+        return 404
 
     def close_connection(self):
         self.cur.close()

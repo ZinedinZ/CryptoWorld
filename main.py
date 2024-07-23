@@ -4,7 +4,7 @@ from log_reg import Log_reg
 from portfolio import Portfolio
 
 crypto = Cryptocurrency()
-#log = Log_reg()
+log = Log_reg()
 portfolio = Portfolio()
 
 app = Flask("__name__")
@@ -30,9 +30,10 @@ def home():
 def login():
     username = request.form.get("username")
     password = request.form.get("password")
-    error = 0#log.check_data(username, password)
-    print(error)
-    return render_template("log_reg.html", error=error)
+    output = log.check_data(username, password)
+    data = crypto.get_data()
+    print(output)
+    return render_template("home_page.html", error=output, data=data)
 
 
 @app.route("/registred", methods=["POST"])
@@ -42,7 +43,7 @@ def registred():
     username = request.form.get("username")
     email = request.form.get("email")
     password = request.form.get("password")
-     #log.save_data(name, lastname, username, email, password)
+    return log.save_data(name, lastname, username, email, password)
 
 @app.route("/login-register")
 def log_reg():

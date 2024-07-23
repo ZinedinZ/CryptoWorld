@@ -12,9 +12,9 @@ crypto_name = [c["name"] for c in data]
 class Portfolio():
     def __init__(self):
         pass
-        # self.conn = psycopg2.connect(host="localhost", dbname="Users", user="postgres", password="postgresql",
-        #                              port=5432)
-        # self.cur = self.conn.cursor()
+        self.conn = psycopg2.connect(host="localhost", dbname="Users", user="postgres", password="postgresql",
+                                     port=5432)
+        self.cur = self.conn.cursor()
 
     def add_transaction(self, user_id, asset, amount, price):
         self.cur.execute("""CREATE TABLE IF NOT EXISTS portfolio (

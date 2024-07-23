@@ -49,9 +49,15 @@
 
             </ul>
              <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                 {% if error == None %}
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="login-register">Login/Register</a>
+                    <a class="nav-link active" aria-current="page" href="login-register">Register/Login</a>
                 </li>
+                 {% else %}
+                 <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="login-register">User: {{error}}</a>
+                </li>
+                 {% endif %}
             </ul>
              <form class="d-flex" role="search" action="{{ url_for('search') }}" method="get">
         <input class="form-control me-2" type="search" placeholder="Search crypto" aria-label="Search" name="query">
