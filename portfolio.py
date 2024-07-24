@@ -24,6 +24,7 @@ class Portfolio():
                             amount decimal NOT NULL,
                             price decimal NOT NULL)
      """)
+        self.conn.commit()
         # Check if asset exist in list
         if asset not in crypto_name:
             return f"{asset} doesn't exist"

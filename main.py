@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from cryptocurrency import Cryptocurrency
 from log_reg import Log_reg
 from portfolio import Portfolio
@@ -8,6 +8,7 @@ log = Log_reg()
 portfolio = Portfolio()
 
 app = Flask("__name__")
+app.config['SECRET_KEY'] = '1999'
 
 
 def round_number(value, decimals=0):
@@ -23,17 +24,34 @@ def utility_processor():
 def home():
     error = request.args.get('error', None)
     data = crypto.get_data()
-    return render_template("home_page.html", data=data, error=error)
+    username = session.get('username')
+    return render_template('home_page.html', username=username, data=data)
 
 
 @app.route("/login", methods=["POST"])
 def login():
+    global user_id
     username = request.form.get("username")
     password = request.form.get("password")
-    output = log.check_data(username, password)
-    data = crypto.get_data()
-    print(output)
-    return render_template("home_page.html", error=output, data=data)
+    user_id = log.check_data(username, password)
+    print(user_id)
+    if user_id != 404:
+        session["user_id"] = user_id
+        session['username'] = username
+        return redirect(url_for("home"))
+    else:
+        flash('Invalid username or password', 'danger')
+    return render_template("log_reg.html")
+
+
+@app.route("/logout")
+def logout():
+    global user_id
+    session.pop('user_id', None)
+    session.pop('username', None)
+    user_id = None
+    return render_template("log_reg.html")
+
 
 
 @app.route("/registred", methods=["POST"])
@@ -71,10 +89,11 @@ def portfolio():
 
 @app.route("/trade", methods=["POST"])
 def trade():
+    userid = user_id
     asset = request.form.get("asset")
     amount = request.form.get("amount")
     price = request.form.get("price")
-    return Portfolio().add_transaction(12, asset, amount, price)
+    return Portfolio().add_transaction(userid, asset, amount, price)
 
 
 @app.route("/cryptocurrency/<crypto_currency>")

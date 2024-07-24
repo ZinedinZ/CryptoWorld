@@ -49,13 +49,17 @@
 
             </ul>
              <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                 {% if error == None %}
+                 {% if username != None %}
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="login-register">Register/Login</a>
+                    <a class="nav-link active" aria-current="page" style="Color: green">{{username}}
+                    </a>
+                </li>
+                 <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="logout">Logout</a>
                 </li>
                  {% else %}
                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="login-register">User: {{error}}</a>
+                    <a class="nav-link active" aria-current="page" href="login-register">Login/Register</a>
                 </li>
                  {% endif %}
             </ul>
