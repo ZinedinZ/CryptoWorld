@@ -1,7 +1,6 @@
 import psycopg2
 from cryptocurrency import Cryptocurrency
 import plotly.graph_objs as go
-import plotly.express as px
 import pandas as pd
 
 crypto = Cryptocurrency()
@@ -39,6 +38,32 @@ class Portfolio():
             self.conn.close()
             self.conn.close()
             return "sve radi, malo sutra"
+
+    def user_portfolio(self, userid):
+        self.cur.execute(f"SELECT asset, amount, price FROM portfolio WHERE user_id = {userid}")
+        data = self.cur.fetchall()
+
+        convert_number = lambda x: int(x) if x == int(x) else float(x)
+        clear_data = [(row[0], convert_number(row[1]), convert_number(row[2])) for row in data]
+        print(clear_data)
+
+        #  query = sql.SQL("""
+        #     SELECT
+        #         currency,
+        #         SUM(CASE WHEN transaction_type = 'buy' THEN amount ELSE 0 END) -
+        #         SUM(CASE WHEN transaction_type = 'sell' THEN amount ELSE 0 END) AS total_amount,
+        #         SUM(CASE WHEN transaction_type = 'buy' THEN amount * price ELSE 0 END) /
+        #         NULLIF(SUM(CASE WHEN transaction_type = 'buy' THEN amount ELSE 0 END), 0) AS avg_buy_price
+        #     FROM
+        #         transactions
+        #     WHERE
+        #         user_id = %s
+        #     GROUP BY
+        #         currency;
+        # """)
+
+        
+        return clear_data
 
     # Create pie chart for users portfolio
     def pie_chart(self):

@@ -5,7 +5,7 @@ from portfolio import Portfolio
 
 crypto = Cryptocurrency()
 log = Log_reg()
-portfolio = Portfolio()
+portf = Portfolio()
 
 app = Flask("__name__")
 app.config['SECRET_KEY'] = '1999'
@@ -85,7 +85,8 @@ def dynamic_page(subpath):
 @app.route("/myportfolio")
 def portfolio():
     Portfolio().pie_chart()
-    return render_template("portfolio.html")
+    user_portfolio = portf.user_portfolio(user_id)
+    return render_template("portfolio.html", data=user_portfolio)
 
 @app.route("/trade", methods=["POST"])
 def trade():
