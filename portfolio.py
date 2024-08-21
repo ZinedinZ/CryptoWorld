@@ -15,13 +15,14 @@ class Portfolio():
                                      port=5432)
         self.cur = self.conn.cursor()
 
-    def add_transaction(self, user_id, asset, amount, price):
+    def add_transaction(self, user_id, asset, amount, price, transaction_type):
         self.cur.execute("""CREATE TABLE IF NOT EXISTS portfolio (
                             id int PRIMARY KEY NOT NULL,
                             user_id int NOT NULL,
                             asset varchar(40) NOT NULL,
                             amount decimal NOT NULL,
-                            price decimal NOT NULL)
+                            price decimal NOT NULL,
+                            transaction_type varchar(5) NOT NULL)
      """)
         self.conn.commit()
         # Check if asset exist in list
@@ -32,43 +33,37 @@ class Portfolio():
         elif not price.isdigit():
             return "price number is not valid, please enter again"
         else:
-            insert_query = "INSERT INTO portfolio (user_id, asset, amount, price) Values(%s, %s, %s, %s)"
-            self.cur.execute(insert_query, (user_id, asset, amount, price))
+            insert_query = "INSERT INTO portfolio (user_id, asset, amount, price, transaction_type)" \
+                           " Values(%s, %s, %s, %s, %s)"
+            self.cur.execute(insert_query, (user_id, asset, amount, price, transaction_type))
             self.conn.commit()
             self.conn.close()
             self.conn.close()
             return "sve radi, malo sutra"
 
     def user_portfolio(self, userid):
-        self.cur.execute(f"SELECT asset, amount, price FROM portfolio WHERE user_id = {userid}")
+        self.cur.execute(f"SELECT asset, SUM(CASE WHEN transaction_type = 'buy' THEN amount ELSE 0 END) - \
+                         SUM(CASE WHEN transaction_type = 'sell' THEN amount ELSE 0 END) \
+                         FROM portfolio WHERE user_id = {userid} GROUP BY asset")
         data = self.cur.fetchall()
+        print(data)
 
         convert_number = lambda x: int(x) if x == int(x) else float(x)
-        clear_data = [(row[0], convert_number(row[1]), convert_number(row[2])) for row in data]
-        print(clear_data)
-
-        #  query = sql.SQL("""
-        #     SELECT
-        #         currency,
-        #         SUM(CASE WHEN transaction_type = 'buy' THEN amount ELSE 0 END) -
-        #         SUM(CASE WHEN transaction_type = 'sell' THEN amount ELSE 0 END) AS total_amount,
-        #         SUM(CASE WHEN transaction_type = 'buy' THEN amount * price ELSE 0 END) /
-        #         NULLIF(SUM(CASE WHEN transaction_type = 'buy' THEN amount ELSE 0 END), 0) AS avg_buy_price
-        #     FROM
-        #         transactions
-        #     WHERE
-        #         user_id = %s
-        #     GROUP BY
-        #         currency;
-        # """)
-
-        
-        return clear_data
+        clear_data = [(row[0], convert_number(row[1])) for row in data]
+        new_data = []
+        for item in clear_data:
+            item = list(item)
+            data2 = crypto.crypto_data(item[0])
+            price = data2[0]["current_price"]
+            item.append(round(price, 2))
+            new_data.append(tuple(item))
+        return new_data
 
     # Create pie chart for users portfolio
     def pie_chart(self):
-        val = [30, 20, 10, 340, 240, 104, 310, 210, 110]
-        data = ["ada", "eth", "btc","aada", "etha", "batc", "asda", "esth", "bstc"]
+        values = self.user_portfolio(userid=2)
+        val = [x[1] * x[2] for x in values]
+        data = [y[0] for y in values]
         trace = go.Pie(
             labels=data,
             values=val,
@@ -79,7 +74,7 @@ class Portfolio():
         fig = go.Figure(data=[trace])
         fig.update_layout(
             margin=dict(l=0, r=0, t=0, b=0),
-            legend=dict(x=-0.1, y=1)  # Pomjerite legendu lijevo
+            legend=dict(x=-0.1, y=1)
         )
         fig.write_image("static/pie.png", width=600)
 

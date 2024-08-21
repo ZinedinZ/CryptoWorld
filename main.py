@@ -86,6 +86,7 @@ def dynamic_page(subpath):
 def portfolio():
     Portfolio().pie_chart()
     user_portfolio = portf.user_portfolio(user_id)
+    coin_price = crypto.get_data()
     return render_template("portfolio.html", data=user_portfolio)
 
 @app.route("/trade", methods=["POST"])
@@ -94,7 +95,8 @@ def trade():
     asset = request.form.get("asset")
     amount = request.form.get("amount")
     price = request.form.get("price")
-    return Portfolio().add_transaction(userid, asset, amount, price)
+    transaction_type = request.form.get("action")
+    return Portfolio().add_transaction(userid, asset, amount, price, transaction_type)
 
 
 @app.route("/cryptocurrency/<crypto_currency>")

@@ -17,17 +17,15 @@
                             <th scope="col">Price</th>
                             <th scope="col">Amount</th>
                             <th scope="col">Wert</th>
-                            <th scope="col">Profit/Loss</th>
                         </tr>
                     </thead>
                     <tbody>
                             {% for token in data %}
                                 <tr>
                                 <td>{{token[0]}}</td>
-                                <td>{{token[1]}} $</td>
-                                <td>{{token[2]}} </td>
+                                <td>{{token[2]}} $</td>
+                                <td>{{"{:,}".format(token[1])}}</td>
                                 <td>{{"{:,}".format(token[1] * token[2])}} $</td>
-                                <td>30.000.000</td>
                                 </tr>
                             {% endfor %}
 
@@ -53,9 +51,9 @@
                         <input type="text" class="form-control" id="formGroupExampleInput3" name="price">
                     </div>
                     <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                        <input type="radio" class="btn-check" name="action" id="btnradio1" value="buy" autocomplete="off" checked>
+                        <input type="radio" class="btn-check" name="action" id="btnradio1" value="buy" autocomplete="off">
                         <label class="btn btn-outline-primary" for="btnradio1">Buy</label>
-                        <input type="radio" class="btn-check" name="action" id="btnradio2" value="sell" autocomplete="off">
+                        <input type="radio" class="btn-check" name="action" id="btnradio2" value="sell" autocomplete="off" checked>
                         <label class="btn btn-outline-primary" for="btnradio2">Sell</label>
                     </div>
                     <div>

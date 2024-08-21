@@ -52,7 +52,7 @@ class Cryptocurrency:
         fig.write_image("static/graph.png")
 
     def crypto_data(self, coin):
-        url = f"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids={coin}"
+        url = f"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids={coin.lower()}"
         header = {"accept": "application/json",
                   "x-cg-demo-api-key": self.Api_key}
         response = requests.get(url=url, headers=header)
