@@ -16,11 +16,6 @@
   </style>
 </head>
 <body>
-{% if error == 0 %}
-    <div style="text-align: center" class="alert alert-primary" role="alert">
-      Invalid Username or Password
-    </div>
-{% endif %}
 
 <div style="display: flex; align-items: center; margin-top: 10px">
 <button onclick=location.href="{{url_for('home')}}" type="button" class="btn btn-outline-info">Back to Home Page</button>
@@ -62,6 +57,15 @@
       <div class="col-12">
         <button type="submit" class="btn btn-primary">Sign in</button>
       </div>
+         {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flashes">
+      {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
        </form>
     </div>
   </div>

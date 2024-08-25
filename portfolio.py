@@ -1,7 +1,6 @@
 import psycopg2
 from cryptocurrency import Cryptocurrency
 import plotly.graph_objs as go
-import pandas as pd
 
 crypto = Cryptocurrency()
 data = crypto.get_data()
@@ -14,17 +13,17 @@ class Portfolio():
         self.conn = psycopg2.connect(host="localhost", dbname="Users", user="postgres", password="postgresql",
                                      port=5432)
         self.cur = self.conn.cursor()
+        self.cur.execute("""CREATE TABLE IF NOT EXISTS portfolio (
+                                   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
+                                   user_id int NOT NULL,
+                                   asset varchar(40) NOT NULL,
+                                   amount decimal NOT NULL,
+                                   price decimal NOT NULL,
+                                   transaction_type varchar(5) NOT NULL)
+            """)
+        self.conn.commit()
 
     def add_transaction(self, user_id, asset, amount, price, transaction_type):
-        self.cur.execute("""CREATE TABLE IF NOT EXISTS portfolio (
-                            id int PRIMARY KEY NOT NULL,
-                            user_id int NOT NULL,
-                            asset varchar(40) NOT NULL,
-                            amount decimal NOT NULL,
-                            price decimal NOT NULL,
-                            transaction_type varchar(5) NOT NULL)
-     """)
-        self.conn.commit()
         # Check if asset exist in list
         if asset not in crypto_name:
             return f"{asset} doesn't exist"
@@ -61,7 +60,7 @@ class Portfolio():
 
     # Create pie chart for users portfolio
     def pie_chart(self):
-        values = self.user_portfolio(userid=2)
+        values = self.user_portfolio(userid=22)
         val = [x[1] * x[2] for x in values]
         data = [y[0] for y in values]
         trace = go.Pie(

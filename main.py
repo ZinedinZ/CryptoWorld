@@ -96,7 +96,8 @@ def trade():
     amount = request.form.get("amount")
     price = request.form.get("price")
     transaction_type = request.form.get("action")
-    return Portfolio().add_transaction(userid, asset, amount, price, transaction_type)
+    Portfolio().add_transaction(userid, asset, amount, price, transaction_type)
+    return redirect(url_for("portfolio"))
 
 
 @app.route("/cryptocurrency/<crypto_currency>")
