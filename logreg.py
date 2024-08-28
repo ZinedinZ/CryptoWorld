@@ -1,12 +1,14 @@
 import psycopg2
 from flask import render_template
+import os
 
-
+db_password = os.getenv("db_password")
+db_name = os.getenv("db_name")
+username = os.getenv("user")
 class Log_reg():
     def __init__(self):
-        self.conn = psycopg2.connect(host="localhost", dbname="Users", user="postgres", password="postgresql", port=5432)
+        self.conn = psycopg2.connect(host="localhost", dbname=db_name, user=username, password=db_password, port=5432)
         self.cur = self.conn.cursor()
-
 
     def open_connection(self):
         self.conn = psycopg2.connect(host="localhost", dbname="Users", user="postgres", password="postgresql",
@@ -30,16 +32,12 @@ class Log_reg():
         self.cur.execute("SELECT username FROM user_data")
 
         usernames = self.cur.fetchall()
-
-
         usernames = [" ".join(map(str, row)) for row in usernames]
         for value in [name, lastname, username, email, password]:
             if value == "":
-                print(1)
                 return 1
         # Check if user already exist in database
         if username in usernames:
-            print(0)
             self.cur.close()
             self.conn.close()
             return 0
@@ -49,12 +47,10 @@ class Log_reg():
             self.conn.close()
             return render_template("registered.html")
 
-
     def check_data(self, username, password):
         self.open_connection()
         self.cur.execute("SELECT id, username, password FROM user_data")
         data =self.cur.fetchall()
-        print(data)
         self.close_connection()
         # Check if user exist in database
         for n in data:
