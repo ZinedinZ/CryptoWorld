@@ -1,14 +1,16 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from cryptocurrency import Cryptocurrency
-from log_reg import Log_reg
+from logreg import LogReg
 from portfolio import Portfolio
+import os
 
 crypto = Cryptocurrency()
-log = Log_reg()
+log = LogReg()
 portf = Portfolio()
+secret_key = os.getenv("key")
 
 app = Flask("__name__")
-app.config['SECRET_KEY'] = '1999'
+app.config['SECRET_KEY'] = secret_key
 
 
 def round_number(value, decimals=0):
@@ -22,36 +24,31 @@ def utility_processor():
 
 @app.route("/")
 def home():
-    error = request.args.get('error', None)
     data = crypto.get_data()
     username = session.get('username')
-    return render_template('home_page.html', username=username, data=data)
+    error = session.pop("error", None)
+    return render_template('home_page.html', username=username, data=data, error=error)
 
 
 @app.route("/login", methods=["POST"])
 def login():
-    global user_id
     username = request.form.get("username")
     password = request.form.get("password")
-    user_id = log.check_data(username, password)
-    print(user_id)
-    if user_id != 404:
-        session["user_id"] = user_id
+    userid = log.check_data(username, password)
+    if userid != 404:
+        session["user_id"] = userid
         session['username'] = username
         return redirect(url_for("home"))
     else:
-        flash('Invalid username or password', 'danger')
-    return render_template("log_reg.html")
+        login_error = 0
+    return render_template("log_reg.html", error=login_error)
 
 
 @app.route("/logout")
 def logout():
-    global user_id
     session.pop('user_id', None)
     session.pop('username', None)
-    user_id = None
     return render_template("log_reg.html")
-
 
 
 @app.route("/registred", methods=["POST"])
@@ -63,41 +60,52 @@ def registred():
     password = request.form.get("password")
     return log.save_data(name, lastname, username, email, password)
 
+
 @app.route("/login-register")
 def log_reg():
     return render_template("log_reg.html")
 
+
 @app.route('/search')
 def search():
     query = request.args.get('query')
-    new_url = url_for('dynamic_page', subpath=query)
-    return redirect(new_url)
+    return redirect(url_for('dynamic_page', subpath=query))
+
 
 @app.route('/home/cryptocurrency/<path:subpath>')
 def dynamic_page(subpath):
     try:
         return cryptocurr(subpath)
     except (KeyError, IndexError, ValueError):
-        error = 0
-        return redirect(url_for("home", error=error))
+        session["error"] = 0
+        return redirect(url_for("home"))
 
 
 @app.route("/myportfolio")
 def portfolio():
-    Portfolio().pie_chart()
-    user_portfolio = portf.user_portfolio(user_id)
-    coin_price = crypto.get_data()
-    return render_template("portfolio.html", data=user_portfolio)
+    user_id = session.get("user_id")
+    try:
+        Portfolio().pie_chart(user_id)
+        user_portfolio = portf.user_portfolio(user_id)
+        if user_id == 404:
+            pass
+        else:
+            return render_template("portfolio.html", data=user_portfolio)
+
+    except Exception:
+        return redirect(url_for("log_reg"))
+
 
 @app.route("/trade", methods=["POST"])
 def trade():
-    userid = user_id
+    userid = session.get("user_id")
     asset = request.form.get("asset")
     amount = request.form.get("amount")
     price = request.form.get("price")
     transaction_type = request.form.get("action")
-    Portfolio().add_transaction(userid, asset, amount, price, transaction_type)
-    return redirect(url_for("portfolio"))
+
+    output = Portfolio().add_transaction(userid, asset, amount, price, transaction_type)
+    return render_template("portfolio.html", error=output)
 
 
 @app.route("/cryptocurrency/<crypto_currency>")

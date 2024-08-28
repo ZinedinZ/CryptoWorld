@@ -20,7 +20,7 @@
     </style>
 </head>
 <body>
-
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="" style="color: red">CryptoWorld</a>
@@ -48,6 +48,7 @@
                 </li>
 
             </ul>
+
              <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                  {% if username != None %}
                 <li class="nav-item">
@@ -70,9 +71,10 @@
         </div>
     </div>
 </nav>
-{% if error == "0" %}
+<!-- Error for search field -->
+{% if error == 0 %}
     <div style="text-align: center" class="alert alert-primary" role="alert">
-      That Cryptocurrency doesn't exist, Please Try again
+      That Cryptocurrency doesn't exist, Please try again
     </div>
 {% endif %}
 

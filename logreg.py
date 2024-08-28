@@ -4,26 +4,28 @@ import os
 
 db_password = os.getenv("db_password")
 db_name = os.getenv("db_name")
-username = os.getenv("user")
-class Log_reg():
+user = os.getenv("user")
+
+
+class LogReg:
     def __init__(self):
-        self.conn = psycopg2.connect(host="localhost", dbname=db_name, user=username, password=db_password, port=5432)
+        self.conn = psycopg2.connect(host="localhost", dbname=db_name, user=user, password=db_password, port=5432)
         self.cur = self.conn.cursor()
 
     def open_connection(self):
-        self.conn = psycopg2.connect(host="localhost", dbname="Users", user="postgres", password="postgresql",
-                                      port=5432)
+        self.conn = psycopg2.connect(host="localhost", dbname=db_name, user=user, password=db_password, port=5432)
         self.cur = self.conn.cursor()
 
     def create_table(self):
         self.cur.execute(""" CREATE TABLE IF NOT EXISTS user_data (
-                                        id int PRIMARY KEY ,
+                                        id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL, ,
                                         name varchar(40) NOT NULL,
                                         lastname varchar(40) NOT NULL,
                                         username varchar(40) NOT NULL,
                                         email varchar(40) NOT NULL,
                                         password varchar(40) NOT NULL)""")
         self.conn.commit()
+
     def save_data(self, name, lastname, username, email, password):
         self.open_connection()
         self.create_table()
@@ -50,7 +52,7 @@ class Log_reg():
     def check_data(self, username, password):
         self.open_connection()
         self.cur.execute("SELECT id, username, password FROM user_data")
-        data =self.cur.fetchall()
+        data = self.cur.fetchall()
         self.close_connection()
         # Check if user exist in database
         for n in data:

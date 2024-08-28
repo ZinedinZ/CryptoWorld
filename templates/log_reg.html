@@ -16,11 +16,17 @@
   </style>
 </head>
 <body>
-
+<!-- Error for login -->
+{% if error == 0 %}
+    <div style="text-align: center" class="alert alert-primary" role="alert">
+      The Username or Password is Incorrect. Try again.
+    </div>
+{% endif %}
 <div style="display: flex; align-items: center; margin-top: 10px">
 <button onclick=location.href="{{url_for('home')}}" type="button" class="btn btn-outline-info">Back to Home Page</button>
 </div>
 <h1 style="text-align: center; padding: 100px">Sign in to your Account, if you don't have it yet, please register</h1>
+<!-- Registration -->
   <div class="container">
     <div class="form-container">
       <h1><strong>Register</strong></h1>
@@ -45,6 +51,7 @@
       </div>
         </form>
     </div>
+    <!-- Login -->
     <div class="form-container">
       <h1><strong>Log in</strong></h1>
        <form method="POST" action="/login">
@@ -57,15 +64,6 @@
       <div class="col-12">
         <button type="submit" class="btn btn-primary">Sign in</button>
       </div>
-         {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul class="flashes">
-      {% for category, message in messages %}
-        <li class="{{ category }}">{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
        </form>
     </div>
   </div>

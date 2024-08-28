@@ -14,7 +14,7 @@ class Cryptocurrency:
             'Accepts': 'application/json',
             "x-cg-demo-api-key": self.Api_key
         }
-
+        # Data for all coins that we display in crypto_list
         request = requests.get(url, headers=headers)
         data = request.json()
         return data
@@ -39,7 +39,8 @@ class Cryptocurrency:
         # Plot scatter chart
         trace = go.Scatter(x=time_data, y=price_data, mode="lines+markers", line=dict(color="red"))
         layout = go.Layout(width=1300, height=750,
-                           title=dict(text=f"{coin_name.capitalize()} price in last 30 Days", y=0.9, x=0.5, xanchor="center",
+                           title=dict(text=f"{coin_name.capitalize()} price in last 30 Days", y=0.9, x=0.5,
+                                      xanchor="center",
                                       yanchor="top",
                                       font=dict(size=20, color='black', family='Arial', weight='bold')),
                            xaxis=dict(title=dict(text="Date", font=dict(weight="bold", size=20)),
@@ -55,6 +56,7 @@ class Cryptocurrency:
         url = f"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids={coin.lower()}"
         header = {"accept": "application/json",
                   "x-cg-demo-api-key": self.Api_key}
+        # Data for chosen crypto coin, all about that coin
         response = requests.get(url=url, headers=header)
         data = response.json()
         del data[0]["image"]
