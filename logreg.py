@@ -2,23 +2,36 @@ import psycopg2
 from flask import render_template
 import os
 
-db_password = os.getenv("db_password")
-db_name = os.getenv("db_name")
-user = os.getenv("user")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_NAME = os.getenv("DB_NAME")
+DB_HOST = os.getenv("DB_HOST")
+DB_USERNAME = os.getenv("DB_USER")
 
 
 class LogReg:
     def __init__(self):
-        self.conn = psycopg2.connect(host="localhost", dbname=db_name, user=user, password=db_password, port=5432)
+        self.conn = psycopg2.connect(
+            host=os.getenv("DB_HOST"),
+            dbname=os.getenv("DB_NAME"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            port=5432
+        )
         self.cur = self.conn.cursor()
 
     def open_connection(self):
-        self.conn = psycopg2.connect(host="localhost", dbname=db_name, user=user, password=db_password, port=5432)
+        self.conn = psycopg2.connect(
+            host=os.getenv("DB_HOST"),
+            dbname=os.getenv("DB_NAME"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            port=5432
+        )
         self.cur = self.conn.cursor()
 
     def create_table(self):
         self.cur.execute(""" CREATE TABLE IF NOT EXISTS user_data (
-                                        id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL, ,
+                                        id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
                                         name varchar(40) NOT NULL,
                                         lastname varchar(40) NOT NULL,
                                         username varchar(40) NOT NULL,
