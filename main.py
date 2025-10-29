@@ -5,11 +5,9 @@ from portfolio import Portfolio
 import os
 
 crypto = Cryptocurrency()
-log = LogReg()
 portf = Portfolio()
 secret_key = os.getenv("key")
-
-app = Flask("__name__")
+app = Flask(__name__)
 app.config['SECRET_KEY'] = secret_key
 
 
@@ -34,6 +32,7 @@ def home():
 def login():
     username = request.form.get("username")
     password = request.form.get("password")
+    log = LogReg()
     userid = log.check_data(username, password)
     if userid != 404:
         session["user_id"] = userid
@@ -58,6 +57,7 @@ def registred():
     username = request.form.get("username")
     email = request.form.get("email")
     password = request.form.get("password")
+    log = LogReg()
     return log.save_data(name, lastname, username, email, password)
 
 
