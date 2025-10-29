@@ -6,15 +6,16 @@ import os
 crypto = Cryptocurrency()
 data = crypto.get_data()
 crypto_name = [c["name"] for c in data]
-db_password = os.getenv("db_password")
-db_name = os.getenv("db_name")
-username = os.getenv("user")
+db_password = os.getenv("DB_PASSWORD")
+db_name = os.getenv("DB_NAME")
+db_host = os.getenv("DB_HOST")
+username = os.getenv("DB_USER")
 
 
 class Portfolio:
     def __init__(self):
         pass
-        self.conn = psycopg2.connect(host="localhost", dbname=db_name, user=username, password=db_password, port=5432)
+        self.conn = psycopg2.connect(host=db_host, dbname=db_name, user=username, password=db_password, port=5432)
         self.cur = self.conn.cursor()
         self.cur.execute("""CREATE TABLE IF NOT EXISTS portfolio (
                                    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
