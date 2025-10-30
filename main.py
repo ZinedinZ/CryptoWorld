@@ -111,8 +111,10 @@ def trade():
 @app.route("/cryptocurrency/<crypto_currency>")
 def cryptocurr(crypto_currency):
     data = crypto.crypto_data(crypto_currency.lower())
-    crypto.chart(crypto_currency.lower())
-    return render_template("graph.html", data=data[0])
+    #crypto.chart(crypto_currency.lower())
+    #return render_template("graph.html", data=data[0])
+    chart_html = crypto.chart(crypto_currency.lower())
+    return render_template("graph.html", data=data[0], chart=chart_html)
 
 
 @app.route("/cryptocurrency")

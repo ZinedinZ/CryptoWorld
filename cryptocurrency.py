@@ -50,7 +50,13 @@ class Cryptocurrency:
                                       tickfont=dict(size=14, color='black', family='Arial', weight='bold')))
 
         fig = go.Figure(data=[trace], layout=layout)
-        fig.write_image("static/graph.png")
+
+
+
+        html_chart = fig.to_html(full_html=False)
+        return html_chart
+
+        #fig.write_image("static/graph.png")
 
     def crypto_data(self, coin):
         url = f"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids={coin.lower()}"
